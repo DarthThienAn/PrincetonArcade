@@ -13,22 +13,44 @@
 
         <Button
             android:id="@+id/start_snake"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Snake" />
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:text="Snake"
+            android:textColor="#ffffff" />
 
         <Button
             android:id="@+id/start_squirrel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Squirrel Hunt" />
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:text="Squirrel Hunt"
+            android:textColor="#ffffff" />
 
         <Button
             android:id="@+id/start_princetontd"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Tower Defense" />
-    </LinearLayout>
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:text="Tower Defense"
+            android:textColor="#ffffff" />
+        <Button
+            android:id="@+id/start_tabletop"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:text="TableTop"
+            android:textColor="#ffffff" />
+        
+        </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,15 +59,23 @@
 
         <Button
             android:id="@+id/view_highscores"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="View High Scores" />
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:text="View High Scores"
+            android:textColor="#ffffff" />
 
         <Button
             android:id="@+id/returntolobby"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Back to Lobby" />
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_background"
+            android:text="Back to Lobby"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>

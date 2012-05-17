@@ -1,3 +1,5 @@
+/* This class taken from Mark Ha's JP */
+
 /**
  * Remember that AndroidManifest.xml needs to give permission for connectivity
  * 

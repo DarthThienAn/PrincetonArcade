@@ -9,13 +9,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    
     <application
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/acorn_bomb"
         android:label="Princeton Arcade" >
         <activity
             android:name=".ArcadeMain"
-            android:label="Princeton Arcade" >
+            android:configChanges="keyboardHidden|orientation"
+            android:label="Princeton Arcade"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +25,8 @@
         </activity>
         <activity
             android:name=".Linker"
-            android:label="Singleplayer Game Select" >
+            android:label="Singleplayer Game Select"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name=".Linker" />
 
@@ -33,7 +35,8 @@
         </activity>
         <activity
             android:name=".HighScores"
-            android:label="High Scores" >
+            android:label="High Scores"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name=".HighScores" />
 
@@ -42,7 +45,7 @@
         </activity>
         <activity
             android:name="com.squirrel.SquirrelMain"
-            android:label="Squirrel Chase" >
+            android:label="Squirrel Hunt" >
             <intent-filter>
                 <action android:name=".SquirrelMain" />
 
@@ -52,9 +55,9 @@
         <activity
             android:name="com.snake.Snake"
             android:configChanges="keyboardHidden|orientation"
+            android:label="Snake"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:label="Snake">
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name=".Snake" />
 
@@ -63,16 +66,20 @@
         </activity>
         <activity
             android:name="puArcade.princetonTD.main.PrincetonTD"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name=".PrincetonTD" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="puArcade.princetonTD.main.GameInstructions"></activity><activity
+        <activity android:name="puArcade.princetonTD.main.GameInstructions" >
+        </activity>
+        <activity
             android:name="puArcade.princetonTD.main.GameSoloActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name=".PrincetonTD" />
 
@@ -80,7 +87,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.connectfour.ConnectFourMainServer"
+            android:name="com.connectfour.ConnectFourChallenged"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -90,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.connectfour.ConnectFourMainClient"
+            android:name="com.connectfour.ConnectFourChallenger"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -99,22 +106,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="com.link.MultiplayerLinker"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name=".Multi" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="GetScores0Activity"></activity>
-        <activity android:name="GetScores1Activity"></activity>
-        <activity android:name="GetScores2Activity"></activity>
-        <activity android:name="GetScores3Activity"></activity>
-        <activity android:name="GetScores4Activity"></activity>
-        
+        <activity android:name="GetScores0Activity" >
+        </activity>
+        <activity android:name="GetScores1Activity" >
+        </activity>
+        <activity android:name="GetScores2Activity" >
+        </activity>
+        <activity android:name="GetScores3Activity" >
+        </activity>
+        <activity android:name="GetScores4Activity" >
+        </activity>
+        <activity
+            android:name="com.Tabletop.GameBaseActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
     </application>
+
 </manifest>

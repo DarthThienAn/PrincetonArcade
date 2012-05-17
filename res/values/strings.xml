@@ -13,12 +13,12 @@
     <string name="confirmlabel">confirm: </string>
     <string name="emaillabel">email: </string>
     <string name="registerstatus"/>
-<string name="mode_ready">Snake\nPress Any Direction To Play</string>
+<string name="mode_ready">Snake\nPress Any Direction To Begin</string>
   <string name="mode_pause">Paused\nPress Any Direction To Resume</string>
   <string name="mode_lose_prefix">Game Over!\nScore: </string>
-  <string name="mode_lose_suffix">\nPress Any Direction To Play</string>
+  <string name="mode_lose_suffix">\nPress Any Direction To Play or Back To End the Game</string>
 
-    <string name="snake_layout_text_text"></string>
-
+    <string name="rules">You have three moves, and your goal is to capture a HORIZONTAL row of the board. On any turn, you can add your tile to the board. You can also switch one of your tiles with one of your opponent\'s tiles, but not if those two tiles have just been switched. Three times during the game, you can take on of your opponent\'s tiles and replace it with your own. Now lets play!</string>
+    
     <string name="lobbytext"></string>
 </resources>

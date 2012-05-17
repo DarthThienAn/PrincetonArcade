@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/main_background"
     android:orientation="vertical" >
-
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/welcometxt"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ff9900" />
 
         <TextView
             android:id="@+id/loginstatustxt"
@@ -70,24 +71,33 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/processLogin"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:onClick="doLogin"
-            android:text="@string/loginlabel" />
+            android:id="@+id/goRegister"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_background"
+            android:onClick="gotoregister"
+            android:text="@string/registerlabel"
+            android:textColor="#ffffff" />
 
         <Button
-            android:id="@+id/goRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="gotoregister"
-            android:text="@string/registerlabel" />
-    </LinearLayout>
+            android:id="@+id/processLogin"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_above="@+id/goRegister"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_background"
+            android:onClick="doLogin"
+            android:text="@string/loginlabel"
+            android:textColor="#ffffff" />
+    </RelativeLayout>
 
 </LinearLayout>

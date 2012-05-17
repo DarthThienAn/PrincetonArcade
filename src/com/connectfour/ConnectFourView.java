@@ -1,3 +1,5 @@
+/* Handles the game logic for Connect Four */
+
 package com.connectfour;
 
 import android.content.Context;
@@ -103,7 +105,7 @@ public class ConnectFourView extends ConnectFourTileView {
 		Resources r = this.getContext().getResources();
 
 		resetTiles(4);
-		loadTile(BACK, r.getDrawable(R.drawable.back));
+		loadTile(BACK, r.getDrawable(R.drawable.connectback));
 		loadTile(RED, r.getDrawable(R.drawable.acorn_bomb));
 		loadTile(GREEN, r.getDrawable(R.drawable.acorn_cut));
 

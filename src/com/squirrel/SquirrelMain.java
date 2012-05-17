@@ -21,7 +21,7 @@ public class SquirrelMain extends Activity implements OnGestureListener {
 	private GestureDetector gestureScanner;
 	private SquirrelView mySquirrelView;
 	/** Instruction screen **/
-	private ImageButton squirrelInst;
+	private ImageButton instructions;
 	/** Buffer for the end of game - allow user to touch twice before restarting. **/
 	private boolean touched = false;
 	private Button easyMode;
@@ -42,13 +42,13 @@ public class SquirrelMain extends Activity implements OnGestureListener {
 		setContentView(R.layout.squirrelgame);
 		mySquirrelView = (SquirrelView) findViewById(R.id.game);
 		mySquirrelView.setTextView((TextView) findViewById(R.id.gametext));
-		squirrelInst = (ImageButton) findViewById(R.id.squirrel_instructs);
-		squirrelInst.setOnClickListener(new OnClickListener() {
+		instructions = (ImageButton) findViewById(R.id.squirrel_instructs);
+		instructions.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				easyMode.setVisibility(View.VISIBLE);
 				mediumMode.setVisibility(View.VISIBLE);
 				hardMode.setVisibility(View.VISIBLE);
-				squirrelInst.setVisibility(View.INVISIBLE);
+				instructions.setVisibility(View.INVISIBLE);
 				mySquirrelView.setVis(View.INVISIBLE);
 			}
 		});
@@ -127,20 +127,7 @@ public class SquirrelMain extends Activity implements OnGestureListener {
 		return;
 	}
 
-	/* Returns the score to the previous activity */
-	public boolean onKeyDown(int keyCode, KeyEvent msg) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			mySquirrelView.setGameOver();
-			Intent resultIntent = new Intent();
-			resultIntent.putExtra("score", mySquirrelView.getMaxScore());
-			System.out.println("sending score of: " + mySquirrelView.getMaxScore());
-			setResult(Activity.RESULT_OK, resultIntent);
-			finish();
-		}
-		return true;
-	}
-
-	/* Handle user touch input */
+	/** Handle user touch input **/
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
 		if (mySquirrelView != null)
@@ -152,7 +139,7 @@ public class SquirrelMain extends Activity implements OnGestureListener {
 				if (touched) //second touch
 				{
 					touched = false;
-					squirrelInst.setVisibility(View.VISIBLE);
+					instructions.setVisibility(View.VISIBLE);
 				}
 				else //first touch
 					touched = true;
@@ -162,6 +149,19 @@ public class SquirrelMain extends Activity implements OnGestureListener {
 				mySquirrelView.update();
 				mySquirrelView.touch(e.getX(), e.getY());
 			}
+		}
+		return true;
+	}
+
+	/** Returns the score to the previous activity when a user presses back **/
+	public boolean onKeyDown(int keyCode, KeyEvent msg) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			mySquirrelView.setGameOver();
+			Intent resultIntent = new Intent();
+			resultIntent.putExtra("score", mySquirrelView.getMaxScore());
+			System.out.println("sending score of: " + mySquirrelView.getMaxScore());
+			setResult(Activity.RESULT_OK, resultIntent);
+			finish();
 		}
 		return true;
 	}

@@ -82,7 +82,6 @@ public class GetScores1Activity extends Activity {
 
 			// try getting http response
 			try {
-				// TODO: check for https functionality
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpPost httppost = new HttpPost(getscoresurl);
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -115,9 +114,7 @@ public class GetScores1Activity extends Activity {
 			return result;
 		}
 		protected void onPostExecute(String results[]) { // print lobby results
-			//final String scoressuccess = "yes";
-			//final String scoresfailure = "error";
-			String scoresresult = results[0]; // status of the post
+			String scoresresult = results[0]; // status of the post for debug
 			String scorestext = results[1];
 			System.out.println("got highscores: " + scorestext);
 

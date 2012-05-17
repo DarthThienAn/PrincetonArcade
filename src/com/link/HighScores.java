@@ -1,52 +1,17 @@
 package com.link;
 
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.link.ArcadeMain.User;
-import com.link.ArcadeMain.UserAdapter;
-
-import android.app.Activity;
 import android.app.TabActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 
-@SuppressWarnings("deprecation")
 public class HighScores extends TabActivity {
 	private Button backtolobby;
 

@@ -114,20 +114,20 @@ public class SquirrelView extends TileView {
 		Resources r = this.getContext().getResources();
 
 		resetTiles(6);
-		loadTile(BROWNSQ, r.getDrawable(R.drawable.brown_squirrel_icon));
-		loadTile(REDSQ, r.getDrawable(R.drawable.red_squirrel_icon));
+		loadTile(BROWNSQ, r.getDrawable(R.drawable.brown_squirrel));
+		loadTile(REDSQ, r.getDrawable(R.drawable.red_squirrel));
 		loadTile(RACCOON, r.getDrawable(R.drawable.raccoon));
 		loadTile(TREE, r.getDrawable(R.drawable.tree_icon));
 		loadTile(GRAYSQ, r.getDrawable(R.drawable.gray_squirrel));
 
-		updateWalls();
-		drawNew();
 
 		score = 0;
 		counter = 0;
 		mFirst = System.currentTimeMillis();
 		range = mTileSize;
 		mLastMove = System.currentTimeMillis();
+		updateWalls();
+		drawNew();
 	}
 
 	public void reset()
@@ -248,7 +248,7 @@ public class SquirrelView extends TileView {
 			}
 
 			if (counter > 5)
-				setText("Score: " + score + " - " + counter + "in a row!");
+				setText("Score: " + score + " - " + counter + " in a row!");
 
 			mRedrawHandler.sleep(0);
 		}
@@ -277,7 +277,7 @@ public class SquirrelView extends TileView {
 			setText("Score: " + score);
 
 			if (counter > 5)
-				setText("Score: " + score + " - " + counter + "in a row!");
+				setText("Score: " + score + " - " + counter + " in a row!");
 		}
 		else
 		{

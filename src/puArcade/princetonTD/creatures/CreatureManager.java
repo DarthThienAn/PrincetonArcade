@@ -330,7 +330,10 @@ public class CreatureManager implements Runnable {
 									e.printStackTrace();
 								}
 							}
-						} 
+						}
+						
+						if (game != null)
+		                    game.waveFinishedLaunch(wave); 
 					}
 				}).start();
 

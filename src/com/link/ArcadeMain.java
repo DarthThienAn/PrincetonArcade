@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -23,7 +25,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,13 +46,15 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import java.security.*;
-
 import com.connectfour.Connect;
 
 public class ArcadeMain extends Activity {
 	private static final String TAG = ArcadeMain.class.getSimpleName();
+	
 	private static final String AUTHCODE = "cos333"; // authentication code to send to PHP for verification of source
+	private static final String md5salt = "cos333-salt";
+	
+	// URLs for PHP scripts
 	private final String loginurl = "http://webscript.princeton.edu/~pcao/cos333/dologin.php";
 	private final String registerurl = "http://webscript.princeton.edu/~pcao/cos333/doregister.php";
 	private final String updateactivityurl = "http://webscript.princeton.edu/~pcao/cos333/updateactivity.php";
@@ -59,21 +62,19 @@ public class ArcadeMain extends Activity {
 	
 	private int screen_width;
 	private int screen_height;
+
+	private String netid = ""; // store netid of the logged in user
 	
-	private static final String md5salt = "cos333-salt";
-	
-	private String netid = "";
-	
+	// connect four connection variables
 	private boolean ready = false;
 	private boolean ready2 = false;
 	private boolean gameStart = false;
 	private long lastMove = 0;
 	private long delay = 50;
-	
 	private Connect connect = new Connect();
 	private RefreshHandler mRefreshHandler = new RefreshHandler();
 	
-	private ArrayList<User> userList; // for lobby
+	private ArrayList<User> userList; // store lobby data
 	
 	// registration parameters
 	private int passMinLength = 4, passMaxLength = 20;
@@ -84,17 +85,12 @@ public class ArcadeMain extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-//        Point size = new Point();
   		DisplayMetrics display = getResources().getDisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getSize(size);
-//        screen_width = size.x;
-//        screen_height = size.y;
         screen_width = display.widthPixels;
         screen_height = display.heightPixels;
         
     }
-    // encode password using md5
+    // function to encode password using md5 for storage
     private String encodePassword(String pass) {
     	byte[] bytesOfMessage;
     	String unencodedpass = md5salt + pass;
@@ -109,16 +105,14 @@ public class ArcadeMain extends Activity {
     		}
     		encodedpass = sb.toString();
     	} catch (UnsupportedEncodingException e) {
-    		// TODO Auto-generated catch block
     		e.printStackTrace();
     	} catch (NoSuchAlgorithmException e) {
-    		// TODO Auto-generated catch block
     		e.printStackTrace();
     	}
     	return encodedpass;
     }
     
-    // called when login button is clicked
+    // called when login button is clicked; runs the login script
     public void doLogin(View v) {
     	
     	final EditText netidEdit = (EditText) findViewById(R.id.netidEntry);
@@ -129,19 +123,21 @@ public class ArcadeMain extends Activity {
         LoginViaPHP task = new LoginViaPHP();
 		task.execute(new String[] { loginurl, netidIn, pwordIn });
     }
+    // called when the back button is pressed
     public void backtologin(View v) {
     	setContentView(R.layout.main);
     }
     private class LoginViaPHP extends AsyncTask<String, String, String[]> {
     	@Override
-    	// check login credentials and returns true if login successful
+    	// check login credentials; parameter is string array with login url, netid, and password
     	protected String[] doInBackground(String... params) {
     		String loginurl;
     		String netidIn;
     		String pwordIn;
     		
-    		String[] result = new String[2];
-    		// get url/login/password from params
+    		String[] result = new String[2]; // display error flag and output of php script
+    		
+    		// get url/login/password from parameters
     		try {
 	    		loginurl = params[0];
 	    		netidIn = params[1];
@@ -149,7 +145,6 @@ public class ArcadeMain extends Activity {
 	    		PasswordChecker checkpass = new PasswordChecker(passMinLength, passMaxLength);
 	    		PasswordChecker checknetid = new PasswordChecker(netidMinLength, netidMaxLength);
 	            if(!checkpass.check(pwordIn) || !checknetid.check(netidIn)) {
-	                //Toast.makeText(HelloAndroid.this, "invalid netID or password", Toast.LENGTH_SHORT).show();
 	                result[0] = "invalid netid/password";
 	    			return result;
 	            }
@@ -160,7 +155,6 @@ public class ArcadeMain extends Activity {
     			result[0] = "error";
     			return result;
     		}
-    		//System.out.println("attempting to login with: " + netidIn + ", " + pwordIn);
     		
     		// set up login/password to be posted to PHP
     		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -168,13 +162,9 @@ public class ArcadeMain extends Activity {
     		nameValuePairs.add(new BasicNameValuePair("pword", pwordIn));
     		nameValuePairs.add(new BasicNameValuePair("auth", AUTHCODE));
     		
-    		System.out.println("attempting to login with: " + netidIn + ", " + pwordIn);
-    		
-    		InputStream content;
-    		
     		// try getting http response
+    		InputStream content;
     		try {
-    			// TODO: check for https functionality
     	        HttpClient httpclient = new DefaultHttpClient();
     	        HttpPost httppost = new HttpPost(loginurl);	        
     	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -202,15 +192,13 @@ public class ArcadeMain extends Activity {
     	        result[0] = "error";
     			return result;
     	    }
-    		System.out.println(output);
     		result[0] = output;
 			return result;
     	}
     	@Override
-    	// process result of login query (true or false)
+    	// process result of login query (flag + output)
     	protected void onPostExecute(String results[]) {
-    		final String loginsuccess = "yes"; // output from PHP to match
-    		//final String loginfailure = "error";
+    		final String loginsuccess = "yes"; // flag for success
     		String loginresult = results[0];
     		String netid = results[1];
     		if (loginresult.equals(loginsuccess)) {
@@ -225,6 +213,7 @@ public class ArcadeMain extends Activity {
     }
 
     private class RegisterViaPHP extends AsyncTask<String, String, String[]> {
+    	// execute registration script; parameter is string array with register url, netid, password, email
     	protected String[] doInBackground(String... params) {
     		String registerurl;
     		String netidIn;
@@ -233,7 +222,7 @@ public class ArcadeMain extends Activity {
     		
     		String[] result = new String[2];    		
     		
-    		// get url/login/password from params
+    		// get inputs from parameter
     		try {
 	    		registerurl = params[0];
 	    		netidIn = params[1];
@@ -247,19 +236,16 @@ public class ArcadeMain extends Activity {
     			return result;
     		}
     		
-    		
-    		// set up login/password to be posted to PHP
+    		// set up netid/password/email to be posted to PHP
     		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
     		nameValuePairs.add(new BasicNameValuePair("netid", netidIn));
     		nameValuePairs.add(new BasicNameValuePair("pword", pwordIn));
     		nameValuePairs.add(new BasicNameValuePair("email", emailIn));
     		nameValuePairs.add(new BasicNameValuePair("auth", AUTHCODE));
-    		System.out.println("attempting to register with: " + netidIn + ", " + pwordIn + ", " + emailIn);
-    		InputStream content;
-    		
+
     		// try getting http response
+    		InputStream content;
     		try {
-    			// TODO: check for https functionality
     	        HttpClient httpclient = new DefaultHttpClient();
     	        HttpPost httppost = new HttpPost(registerurl);	        
     	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -271,7 +257,6 @@ public class ArcadeMain extends Activity {
     	        result[0] = "error";
     			return result;
     	    }
-    		//System.out.println("post successful");
     		
     		// try reading http response
     		String output = "";
@@ -287,13 +272,11 @@ public class ArcadeMain extends Activity {
     	        result[0] = "error";
     			return result;
     	    }
-    		//Log.e("log_tag", "output: " + output);
     		result[0] = output;
 			return result;
     	}
     	protected void onPostExecute(String results[]) {
-    		final String registersuccess = "yes";
-    		//final String registerfailure = "error";
+    		final String registersuccess = "yes"; // flag for registration success
     		String registerresult = results[0];
     		String netid = results[1];
     		if (registerresult.equals(registersuccess)) {
@@ -307,11 +290,15 @@ public class ArcadeMain extends Activity {
     	}
     }
     
+    // function to set the status text of the user in the lobby
     private void setActivity(String newActivity) {
 		UpdateActivityViaPHP task = new UpdateActivityViaPHP();
-		task.execute(new String[] { updateactivityurl, netid, newActivity, getLocalIpAddress() }); // set activity to in lobby
+		task.execute(new String[] { updateactivityurl, netid, newActivity, getLocalIpAddress() });
 	}
+    
+    // function that executes the php script to update user's activity in the lobby
     private class UpdateActivityViaPHP extends AsyncTask<String, String, String[]> {
+    	// parameter is string array with php script url, netid, activity string, and phone ip address
     	protected String[] doInBackground(String... params) {
     		String updateactivityurl;
     		String netidIn;
@@ -320,8 +307,6 @@ public class ArcadeMain extends Activity {
     		
     		String[] result = new String[2];
     		
-    		
-    		// get url/login/password from params
     		try {
 	    		updateactivityurl = params[0];
 	    		netidIn = params[1];
@@ -333,9 +318,7 @@ public class ArcadeMain extends Activity {
     			result[0] = "error";
     			return result;
     		}
-    		System.out.println("attempting to update activity with: " + netidIn + ", " + activityIn + ", " + phoneipIn);
     		
-    		// set up login/password to be posted to PHP
     		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
     		nameValuePairs.add(new BasicNameValuePair("netid", netidIn));
     		nameValuePairs.add(new BasicNameValuePair("activity", activityIn));
@@ -343,10 +326,7 @@ public class ArcadeMain extends Activity {
     		nameValuePairs.add(new BasicNameValuePair("auth", AUTHCODE));
     		
     		InputStream content;
-    		
-    		// try getting http response
     		try {
-    			// TODO: check for https functionality
     	        HttpClient httpclient = new DefaultHttpClient();
     	        HttpPost httppost = new HttpPost(updateactivityurl);	        
     	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -374,18 +354,15 @@ public class ArcadeMain extends Activity {
     	        result[0] = "error";
     			return result;
     	    }
-    		Log.e("log_tag", "output: " + output);
     		result[0] = output;
 			return result;
     	}
     	protected void onPostExecute(String results[]) {
-    		final String updatesuccess = "yes";
-    		//final String updatefailure = "error";
+    		final String updatesuccess = "yes"; // flag for update success
     		String updateresult = results[0];
     		String activity = results[1];
     		if (updateresult.equals(updatesuccess)) {
-    			// success
-    			System.out.println("updated activity: " + activity);
+    			//System.out.println("updated activity: " + activity);
     		} else {
     			// failure
     			System.out.println("failed to update activity: " + activity);
@@ -393,6 +370,7 @@ public class ArcadeMain extends Activity {
     	}
     }
     
+    // function to get local ip address of the phone as a string; stored in database with user's activity
     public String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
@@ -409,16 +387,17 @@ public class ArcadeMain extends Activity {
         }
         return null;
     }
+    
     public String getMyNetid() {
     	return netid;
     }
-
     
+    // executes php script to retrieve the elements of the arcade lobby
     private class GetLobbyViaPHP extends AsyncTask<String, String, String[]> {
     	protected String[] doInBackground(String... params) {
     		String getlobbyurl;
     		
-    		String[] result = new String[] { "error", "" }; // to be returned
+    		String[] result = new String[] { "error", "" }; // flag + output to be returned
     		
     		try {
     			getlobbyurl = params[0];
@@ -434,10 +413,7 @@ public class ArcadeMain extends Activity {
     		nameValuePairs.add(new BasicNameValuePair("netid", netid));
     		
     		InputStream content;
-    		
-    		// try getting http response
     		try {
-    			// TODO: check for https functionality
     	        HttpClient httpclient = new DefaultHttpClient();
     	        HttpPost httppost = new HttpPost(getlobbyurl);	        
     	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -469,11 +445,11 @@ public class ArcadeMain extends Activity {
     		result[1] = output;
     		return result;
     	}
-    	protected void onPostExecute(String results[]) { // print lobby results
-    		final String lobbyfailure = "error";
+    	// prepare output for display
+    	protected void onPostExecute(String results[]) {
+    		final String lobbyfailure = "error"; // flag for php script error
     		String lobbyresult = results[0];
     		String lobbytext = results[1];
-    		System.out.println("got lobby: " + lobbytext);
     		
     		String[] lobbydata = lobbytext.split(";");
     		String[] netid = new String[lobbydata.length/3];
@@ -492,8 +468,7 @@ public class ArcadeMain extends Activity {
             }
     		
     		
-    		if (!lobbyresult.equals(lobbyfailure)) {
-    			// success    			
+    		if (!lobbyresult.equals(lobbyfailure)) { // php script has succeeded in retrieving lobby		
     			ListView lv_lobby = (ListView) findViewById(R.id.lv_lobby);
     			lv_lobby.setAdapter(new UserAdapter(getApplicationContext(), R.layout.lobby_item, userList));
     			lv_lobby.setOnItemClickListener(new OnItemClickListener() {
@@ -510,13 +485,10 @@ public class ArcadeMain extends Activity {
                         Button challenge = (Button) pview.findViewById(R.id.lobby_challenge);
                         challenge.setOnClickListener(new OnClickListener() {
                             public void onClick(View v) {
-                                System.out.println("position: " + position);
                                 User u = userList.get(position);
-                                System.out.println("user: " + u.getName() + " status: " + u.getStatus() + " ip: " + u.getIP());
-                                // TODO: fix challenge
                 		        Intent myIntent = new Intent(ArcadeMain.this, MultiplayerLinker.class);
                 		        myIntent.putExtra("netid", getMyNetid());
-                		        myIntent.putExtra("opponentip", u.getIP()); // TODO: fix this
+                		        myIntent.putExtra("opponentip", u.getIP());
                 		        ArcadeMain.this.startActivityForResult(myIntent, -2);
                 		        pw.dismiss();
                             }
@@ -531,7 +503,7 @@ public class ArcadeMain extends Activity {
                     }
                   });
     		} else {
-    			// failure
+    			// php script failure
     			final TextView tv_lobby = (TextView) findViewById(R.id.tv_lobby);
     			tv_lobby.setText("Unable to connect to lobby.");
     			tv_lobby.setTextColor(Color.RED);
@@ -542,6 +514,7 @@ public class ArcadeMain extends Activity {
     
     // set up the lobby and start screen after logging in
     private void loggedIn() {
+    	
     	// enables you to receive challenges
 		connect.initServer();
 		ready = false; ready2 = false;
@@ -550,7 +523,7 @@ public class ArcadeMain extends Activity {
 		
         setActivity("In Lobby");
 		
-		setContentView(R.layout.loggedin);
+		setContentView(R.layout.lobby);
     	final TextView welcomeuser = (TextView) findViewById(R.id.welcomeuser);
         welcomeuser.setText("Welcome, " + netid + "!");
         
@@ -571,7 +544,6 @@ public class ArcadeMain extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				GetLobbyViaPHP getlobby = new GetLobbyViaPHP();
 				getlobby.execute(new String[] { getlobbyurl });
 			}
@@ -593,7 +565,7 @@ public class ArcadeMain extends Activity {
        }
 	}
     
-    // called when register button is clicked
+    // called when register button is clicked; checks/sanitizes input before executing php script
     public void doRegister(View v) {
     	final EditText netidEdit = (EditText) findViewById(R.id.netidEntry);
         final EditText passwordEdit = (EditText) findViewById(R.id.passwordEntry);
@@ -631,6 +603,7 @@ public class ArcadeMain extends Activity {
 		task.execute(new String[] { registerurl, netidIn, pwordIn, emailIn });
     }
     
+    // called when user presses button to move from login to registration screen
     public void gotoregister(View v) {
     	final EditText netidFromLogin = (EditText) findViewById(R.id.netidEntry);
         final EditText passwordFromLogin = (EditText) findViewById(R.id.passwordEntry);
@@ -643,14 +616,18 @@ public class ArcadeMain extends Activity {
         passwordFromRegister.setText(pwordIn);
     }
     
-    public void setNetid(String netid) { // set this upon successful login/registration
+    // set this upon successful login/registration
+    public void setNetid(String netid) { 
 		this.netid = netid;
 	}
+    
+    // called when user clicks log out button
     public void loggedOut() {
     	netid = "";
     	setActivity("Offline");
     	setContentView(R.layout.main);
     }
+    
     protected void onDestroy() {
     	Log.d(TAG, "destroying...");
     	super.onDestroy();
@@ -736,7 +713,7 @@ public class ArcadeMain extends Activity {
 						setActivity("Playing Connect Four");
 
 						connect.close();
-						Intent myIntent = new Intent(ArcadeMain.this, com.connectfour.ConnectFourMainServer.class);
+						Intent myIntent = new Intent(ArcadeMain.this, com.connectfour.ConnectFourChallenged.class);
 						ArcadeMain.this.startActivityForResult(myIntent, com.link.Linker.CONNECT_ID);
 						pw.dismiss();
 					}
@@ -755,6 +732,7 @@ public class ArcadeMain extends Activity {
 
 	}
 	
+	// used for UI elements of lobby
     class User {
         private String username;
         private String status;

@@ -14,16 +14,16 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+ */
 
 /*
   Unless stated otherwise, all code below is from said above open 
   source project. Code variables have been translated from French to
   English to facilitate development. Everything else has been left intact
   from the original source.
-  
+
   Modified portions are further commented detailing changes made.
-*/
+ */
 
 package puArcade.princetonTD.game;
 
@@ -91,7 +91,9 @@ public abstract class Game
 
 	// Wave of creatures
 	protected CreatureWave currentWave;
-
+	
+	// Is a wave launching?
+	protected boolean isLaunching = false;
 
 	// Initialized?
 	protected boolean isInitialized;
@@ -154,6 +156,10 @@ public abstract class Game
 		isInitialized = true;
 	}
 
+	//-----------------------------------------
+	// Management
+	//-----------------------------------------
+
 	public void reset()
 	{
 		map.reset();
@@ -203,6 +209,149 @@ public abstract class Game
 		animationManager.start();
 
 		isStarted = true;
+	}
+
+
+	// end
+	public void end()
+	{
+		if(!isFinished)
+		{
+			isFinished = true;
+
+			stopAll();
+		}
+	}
+
+	// Stop all
+	protected void stopAll()
+	{
+		towerManager.stopTowers();
+		creatureManager.stopCreatures();
+		animationManager.stopAnimations();
+	}
+
+	// Pause
+	public boolean togglePause()
+	{
+		if(pause)
+		{
+			towerManager.unpause();
+			creatureManager.unpause();
+			animationManager.unpause();
+		}
+		else
+		{
+			towerManager.pause();
+			creatureManager.pause();
+			animationManager.pause();
+		}
+
+		return pause = !pause;  
+	}
+
+	// destroy
+	public void destroy()
+	{
+		isDestroyed = true;
+
+		towerManager.destroy();
+		creatureManager.destroy();
+		animationManager.destroy();
+	}
+
+	// is initialized?
+	public boolean isInitialized()
+	{
+		return isInitialized;
+	}
+
+	// is started?
+	public boolean isStarted()
+	{
+		return isStarted;
+	}
+
+	// is finished?
+	public boolean isFinished()
+	{
+		return isFinished;
+	}
+
+	// is paused?
+	public boolean isPaused()
+	{
+		return pause;
+	}
+
+	// is destroyed?
+	public boolean isDestroyed()
+	{
+		return isDestroyed;
+	}
+
+	// return speed coefficient
+	public double getCoeffSpeed()
+	{
+		return coeffSpeed;
+	}
+
+	// increment speed coefficient
+	public synchronized double increaseSpeed()
+	{
+		if(coeffSpeed + STEP_COEFF_SPEED <= MAX_COEFF_SPEED)
+		{    
+			coeffSpeed += STEP_COEFF_SPEED;
+		}
+
+		return coeffSpeed;
+	}
+
+	// decrement speed coefficient
+	synchronized public double decreaseSpeed()
+	{
+		if(coeffSpeed - STEP_COEFF_SPEED >= MIN_COEFF_SPEED)
+		{ 
+			coeffSpeed -= STEP_COEFF_SPEED;
+		}    
+		return coeffSpeed;
+	}
+
+	// set speed coefficient
+	public void setCoeffSpeed(double value)
+	{
+		if(coeffSpeed - STEP_COEFF_SPEED < MIN_COEFF_SPEED
+				&& coeffSpeed + STEP_COEFF_SPEED > MAX_COEFF_SPEED)
+			throw new IllegalArgumentException(
+					"Cannot modify speed");
+
+		coeffSpeed = value;
+	}
+
+	// return positioning mode
+	public int getMode()
+	{
+		return MODE;
+	}
+
+	//-----------------------------------------
+	// Towers
+	//-----------------------------------------
+
+	// get Tower
+	public Tower getTower(int idTower)
+	{
+		for (Tower tower : getTowers())
+			if (tower.getId() == idTower)
+				return tower;
+
+		return null;
+	}
+
+	// return towers
+	public Vector<Tower> getTowers()
+	{
+		return towerManager.getTowers();
 	}
 
 	// Place tower
@@ -266,11 +415,68 @@ public abstract class Game
 		tower.upgrade();
 	}
 
+	// Can place tower
+	public boolean canPlaceTower(Tower tower)
+	{
+		return towerManager.canPlaceTower(tower);
+	}
+
+	// Can buy tower
+	public boolean canBuyTower(Tower tower)
+	{  
+		return towerManager.canBuyTower(tower);
+	}
+
+	//-----------------------------------------
+	// Creatures
+	//-----------------------------------------
+
+	// get Creature
+	public Creature getCreature(int idCreature)
+	{
+		return creatureManager.getCreature(idCreature);
+	}
+
+	// get all creatures
+	public Vector<Creature> getCreatures()
+	{
+		return creatureManager.getCreatures();
+	}
+
+	// return creatures in circle
+	public Vector<Creature> getCreaturesInCircle(int centerX, int centreY, int radius)
+	{
+		return creatureManager.getCreaturesInCircle(centerX, centreY, radius);
+	}
+
+	//-----------------------------------------
+	// Waves
+	//-----------------------------------------
+
+	// get current wave
+	public CreatureWave getWave()
+	{
+		return currentWave;
+	}
+
+	// return current wave number
+	public int getCurrentWave()
+	{
+		return indexCurrentWave;
+	}
+
+	// move onto next wave
+	public void nextWave()
+	{
+		indexCurrentWave++;
+	}
+
 	// Start new wave of creatures
 	public void launchNewWave(Player player, Team team)
 	{
 		currentWave = map.getCreatureWave(indexCurrentWave);
-
+		
+		isLaunching = true;
 		nextWave();
 
 		creatureManager.launchWave(currentWave, player, team);
@@ -278,29 +484,48 @@ public abstract class Game
 		currentWave = map.getCreatureWave(indexCurrentWave);
 	}
 
-	// Launch Wave
-	public void launchWave(Player player, Team team, CreatureWave wave) throws NoMoneyException
-	{ 
-		creatureManager.launchWave(wave, player, team);
+	// wave finished launching
+	public void waveFinishedLaunch(CreatureWave wave) {
+		isLaunching = false;
+	}
+	
+	// is a wave being launched?
+	public boolean isLaunching()
+	{
+		return isLaunching;
 	}
 
-	// is finished?
-	public boolean isFinished()
+	synchronized public void killedCreature(Creature creature, Player player)
 	{
-		return isFinished;
+		player.setGold(player.getGold() + creature.getReward());
+
+		player.setScore(player.getScore() + creature.getReward());
 	}
 
-
-	// end
-	public void end()
+	synchronized public void reachedCreature(Creature creature)
 	{
-		if(!isFinished)
+		Team team = creature.getTargetTeam();
+
+		if(!team.hasLost())
 		{
-			isFinished = true;
+			team.loseLife();
 
-			stopAll();
-		}
+			if(team.hasLost())
+			{
+				int remaining = 0;
+				for(Team tmp : teams)
+					if(!tmp.hasLost())
+						remaining++;
+
+				if(remaining <= 1)
+					end();
+			}
+		} 
 	}
+
+	//-----------------------------------------
+	// Map
+	//-----------------------------------------
 
 	// Set map
 	public void setMap(Map map) throws IllegalArgumentException
@@ -319,49 +544,20 @@ public abstract class Game
 		return map;
 	}
 
-	// Get creatures
-	public Vector<Creature> getCreatures()
-	{
-		return creatureManager.getCreatures();
-	}
+	//-----------------------------------------
+	// Player
+	//-----------------------------------------
 
-	// Stop all
-	protected void stopAll()
+	// get player
+	public Player getPlayer(int idPlayer)
 	{
-		towerManager.stopTowers();
-		creatureManager.stopCreatures();
-		animationManager.stopAnimations();
-	}
+		ArrayList<Player> players = getPlayers();
 
-	// Pause
-	public boolean togglePause()
-	{
-		if(pause)
-		{
-			towerManager.unpause();
-			creatureManager.unpause();
-			animationManager.unpause();
-		}
-		else
-		{
-			towerManager.pause();
-			creatureManager.pause();
-			animationManager.pause();
-		}
+		for(Player player : players)
+			if(player.getId() == idPlayer)
+				return player;
 
-		return pause = !pause;  
-	}
-
-	// is paused?
-	public boolean isPaused()
-	{
-		return pause;
-	}
-
-	// return teams
-	public ArrayList<Team> getTeams()
-	{
-		return teams;
+		return null;
 	}
 
 	// return players
@@ -397,86 +593,6 @@ public abstract class Game
 		this.player = player;
 	}
 
-	synchronized public void killedCreature(Creature creature, Player player)
-	{
-		player.setGold(player.getGold() + creature.getReward());
-
-		player.setScore(player.getScore() + creature.getReward());
-	}
-
-	synchronized public void reachedCreature(Creature creature)
-	{
-		Team team = creature.getTargetTeam();
-
-		if(!team.hasLost())
-		{
-			team.loseLife();
-
-			if(team.hasLost())
-			{
-				int remaining = 0;
-				for(Team tmp : teams)
-					if(!tmp.hasLost())
-						remaining++;
-
-				if(remaining <= 1)
-					end();
-			}
-		} 
-	}
-
-	// Can place tower
-	public boolean canPlaceTower(Tower tower)
-	{
-		return towerManager.canPlaceTower(tower);
-	}
-
-	// Can buy tower
-	public boolean canBuyTower(Tower tower)
-	{  
-		return towerManager.canBuyTower(tower);
-	}
-
-	// return towers
-	public Vector<Tower> getTowers()
-	{
-		return towerManager.getTowers();
-	}
-
-	// return creatures in circle
-	public Vector<Creature> getCreaturesInCircle(int centerX, int centreY, int radius)
-	{
-		return creatureManager.getCreaturesInCircle(centerX, centreY, radius);
-	}
-
-	// add animation
-	public void addAnimation(Animation animation)
-	{
-		animationManager.addAnimation(animation);
-	}
-
-	// get player
-	public Player getPlayer(int idPlayer)
-	{
-		ArrayList<Player> players = getPlayers();
-
-		for(Player player : players)
-			if(player.getId() == idPlayer)
-				return player;
-
-		return null;
-	}
-
-	// get team
-	public Team getTeam(int idTeam)
-	{
-		for(Team team : teams)
-			if(team.getId() == idTeam)
-				return team;
-
-		return null;
-	}
-
 	// get Player Loaction
 	public PlayerLocation getPlayerLocation(int idLocation)
 	{
@@ -488,26 +604,24 @@ public abstract class Game
 		return null;
 	}
 
-	// get Tower
-	public Tower getTower(int idTower)
+	//-----------------------------------------
+	// Team
+	//-----------------------------------------
+
+	// get team
+	public Team getTeam(int idTeam)
 	{
-		for (Tower tower : getTowers())
-			if (tower.getId() == idTower)
-				return tower;
+		for(Team team : teams)
+			if(team.getId() == idTeam)
+				return team;
 
 		return null;
 	}
 
-	// get Creature
-	public Creature getCreature(int idCreature)
+	// return teams
+	public ArrayList<Team> getTeams()
 	{
-		return creatureManager.getCreature(idCreature);
-	}
-
-	// get current wave
-	public CreatureWave getWave()
-	{
-		return currentWave;
+		return teams;
 	}
 
 	// next non-empty team
@@ -521,90 +635,6 @@ public abstract class Game
 		return teams.get(i);
 	}
 
-	// is initialized?
-	public boolean isInitialized()
-	{
-		return isInitialized;
-	}
-
-	// is started?
-	public boolean isStarted()
-	{
-		return isStarted;
-	}
-
-	// return current wave number
-	public int getCurrentWave()
-	{
-		return indexCurrentWave;
-	}
-
-	// move onto next wave
-	public void nextWave()
-	{
-		indexCurrentWave++;
-	}
-
-	// destroy
-	public void destroy()
-	{
-		isDestroyed = true;
-
-		towerManager.destroy();
-		creatureManager.destroy();
-		animationManager.destroy();
-	}
-
-	// is destroyed?
-	public boolean isDestroyed()
-	{
-		return isDestroyed;
-	}
-
-	// return speed coefficient
-	public double getCoeffSpeed()
-	{
-		return coeffSpeed;
-	}
-
-	// increment speed coefficient
-	public synchronized double increaseSpeed()
-	{
-		if(coeffSpeed + STEP_COEFF_SPEED <= MAX_COEFF_SPEED)
-		{    
-			coeffSpeed += STEP_COEFF_SPEED;
-		}
-
-		return coeffSpeed;
-	}
-
-	// decrement speed coefficient
-	synchronized public double decreaseSpeed()
-	{
-		if(coeffSpeed - STEP_COEFF_SPEED >= MIN_COEFF_SPEED)
-		{ 
-			coeffSpeed -= STEP_COEFF_SPEED;
-		}    
-		return coeffSpeed;
-	}
-
-	// set speed coefficient
-	public void setCoeffSpeed(double value)
-	{
-		if(coeffSpeed - STEP_COEFF_SPEED < MIN_COEFF_SPEED
-				&& coeffSpeed + STEP_COEFF_SPEED > MAX_COEFF_SPEED)
-			throw new IllegalArgumentException(
-					"Cannot modify speed");
-
-		coeffSpeed = value;
-	}
-
-	// return positioning mode
-	public int getMode()
-	{
-		return MODE;
-	}
-
 	// add team
 	public void addTeam(Team team)
 	{
@@ -615,6 +645,16 @@ public abstract class Game
 	public void removeTeam(Team team)
 	{
 		teams.remove(team);
+	}
+
+	//-----------------------------------------
+	// Animation
+	//-----------------------------------------
+
+	// add animation
+	public void addAnimation(Animation animation)
+	{
+		animationManager.addAnimation(animation);
 	}
 
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@drawable/main_background"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background" >
 
     <com.squirrel.SquirrelView
         android:id="@+id/game"
@@ -17,6 +17,7 @@
         android:text=""
         android:textColor="#ffffff"
         android:textSize="24sp"
+        android:textStyle="bold"
         android:visibility="visible" />
 
     <ImageButton
@@ -31,32 +32,41 @@
 
     <Button
         android:id="@+id/squirrel_easy"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/gametext"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
         android:layout_marginTop="72dp"
+        android:background="@drawable/button_background"
         android:text="Easy Mode"
+        android:textColor="#ffffff"
         android:visibility="invisible" />
 
     <Button
         android:id="@+id/squirrel_medium"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
         android:layout_alignLeft="@+id/squirrel_easy"
         android:layout_below="@+id/squirrel_easy"
+        android:layout_marginBottom="5dp"
         android:layout_marginTop="36dp"
+        android:background="@drawable/button_background"
         android:text="Medium Mode"
+        android:textColor="#ffffff"
         android:visibility="invisible" />
 
     <Button
         android:id="@+id/squirrel_hard"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
         android:layout_alignLeft="@+id/squirrel_medium"
         android:layout_below="@+id/squirrel_medium"
+        android:layout_marginBottom="5dp"
         android:layout_marginTop="36dp"
+        android:background="@drawable/button_background"
         android:text="Hard Mode"
+        android:textColor="#ffffff"
         android:visibility="invisible" />
 
 </RelativeLayout>

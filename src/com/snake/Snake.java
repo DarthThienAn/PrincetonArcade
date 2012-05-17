@@ -16,19 +16,16 @@
 
 package com.snake;
 
-import com.link.R;
-import com.link.R.id;
-import com.link.R.layout;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.link.R;
 
 /**
  * Snake: a simple game that everyone can enjoy.
@@ -41,77 +38,69 @@ import android.widget.TextView;
  */
 public class Snake extends Activity {
 
-    private SnakeView mSnakeView;
-    private ImageButton snakeInst;
-    private boolean started = false;
-    
-    private static String ICICLE_KEY = "snake-view";
+	private SnakeView mSnakeView;
+	private ImageButton snakeInst;
+	private boolean started = false;
 
-    /**
-     * Called when Activity is first created. Turns off the title bar, sets up
-     * the content views, and fires up the SnakeView.
-     * 
-     */
-    @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	//    private static String ICICLE_KEY = "snake-view";
 
-        setContentView(R.layout.snake_layout);
-        snakeInst = (ImageButton) findViewById(R.id.snake_instructs);
-        snakeInst.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	snakeInst.setVisibility(View.INVISIBLE);
-            	startgame(savedInstanceState);
-            }
-        });
-        
-    }
-    private void startgame(Bundle savedInstanceState) {
-    	System.out.println("game initialized");
-    	started = true;
-    	mSnakeView = (SnakeView) findViewById(R.id.snake);
-        mSnakeView.setTextView((TextView) findViewById(R.id.text));
-        mSnakeView.setScoreTextView((TextView) findViewById(R.id.snakescoreTV));
+	/**
+	 * Called when Activity is first created. Turns off the title bar, sets up
+	 * the content views, and fires up the SnakeView.
+	 * 
+	 */
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        if (savedInstanceState == null) {
-            // We were just launched -- set up a new game
-            mSnakeView.setMode(SnakeView.READY);
-        } else {
-            // We are being restored
-            Bundle map = savedInstanceState.getBundle(ICICLE_KEY);
-            if (map != null) {
-                mSnakeView.restoreState(map);
-            } else {
-                mSnakeView.setMode(SnakeView.PAUSE);
-            }
-        }        
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Pause the game along with the activity
-        if (started == true) {
-			mSnakeView.setMode(SnakeView.PAUSE);
+		setContentView(R.layout.snakegame);
+		snakeInst = (ImageButton) findViewById(R.id.snake_instructs);
+		snakeInst.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				snakeInst.setVisibility(View.INVISIBLE);
+				startgame();
+			}
+		});
+
+	}
+	private void startgame() {
+		System.out.println("game initialized");
+		started = true;
+		mSnakeView = (SnakeView) findViewById(R.id.snake);
+		mSnakeView.setTextView((TextView) findViewById(R.id.text));
+		mSnakeView.setScoreTextView((TextView) findViewById(R.id.snakescoreTV));
+		mSnakeView.setTextViewVisibility(View.VISIBLE);
+		mSnakeView.setMode(SnakeView.READY);
+		//        if (savedInstanceState == null) {
+		//            // We were just launched -- set up a new game
+		//        } else {
+		//            // We are being restored
+		//            Bundle map = savedInstanceState.getBundle(ICICLE_KEY);
+		//            if (map != null) {
+		//                mSnakeView.restoreState(map);
+		//            } else {
+		//                mSnakeView.setMode(SnakeView.PAUSE);
+		//            }
+		//        }        
+	}
+
+	//    @Override
+	//    public void onSaveInstanceState(Bundle outState) {
+	//        //Store the game state
+	//        outState.putBundle(ICICLE_KEY, mSnakeView.saveState());
+	//    }
+	public boolean onKeyDown(int keyCode, KeyEvent msg) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			System.out.println("pressed back!");
+			Intent resultIntent = new Intent();
+			if (started == false) {
+				resultIntent.putExtra("score", 0);
+			} else {
+				resultIntent.putExtra("score", mSnakeView.getScore());
+			}
+			setResult(Activity.RESULT_OK, resultIntent);
+			finish();
 		}
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //Store the game state
-        outState.putBundle(ICICLE_KEY, mSnakeView.saveState());
-    }
-    public boolean onKeyDown(int keyCode, KeyEvent msg) {
-    	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		System.out.println("pressed back!");
-    		Intent resultIntent = new Intent();
-    		if (started == false) {
-    			resultIntent.putExtra("score", 0);
-    		} else {
-    			resultIntent.putExtra("score", mSnakeView.getScore());
-    		}
-	    	setResult(Activity.RESULT_OK, resultIntent);
-	        finish();
-    	}
-    	return true;
-    }
+		return true;
+	}
 }

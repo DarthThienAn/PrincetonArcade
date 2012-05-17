@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.snake;
+/* Adaptation of a generic class for a TileSet interface */
 
-import com.link.R;
-import com.link.R.styleable;
+package com.snake;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -27,6 +26,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.link.R;
 
 
 /**
@@ -44,8 +45,8 @@ public class TileView extends View {
 	private final int defaultTileSize = 24;
     protected static int mTileSize; // set tile size
 
-    protected static int mXTileCount;
-    protected static int mYTileCount;
+    protected static int mXTileCount = 14;
+    protected static int mYTileCount = 26;
 
     private static int mXOffset;
     private static int mYOffset;
@@ -97,8 +98,9 @@ public class TileView extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        mXTileCount = (int) Math.floor(w / mTileSize);
-        mYTileCount = (int) Math.floor(h / mTileSize);
+   	 mTileSize = (int) (Math.floor(h /mYTileCount));
+//        mXTileCount = (int) Math.floor(w / mTileSize);
+//        mYTileCount = (int) Math.floor(h / mTileSize);
 
         mXOffset = ((w - (mTileSize * mXTileCount)) / 2);
         mYOffset = ((h - (mTileSize * mYTileCount)) / 2);

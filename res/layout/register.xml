@@ -123,17 +123,25 @@
 
         <Button
             android:id="@+id/goRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_background"
             android:onClick="doRegister"
-            android:text="@string/registerlabel" />
+            android:text="@string/registerlabel"
+            android:textColor="#ffffff" />
 
         <Button
             android:id="@+id/back"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_background"
             android:onClick="backtologin"
-            android:text="Back" />
+            android:text="Back"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>

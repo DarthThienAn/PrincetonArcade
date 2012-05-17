@@ -70,26 +70,26 @@ public class GameThread extends Thread {
 
 		this.context = context;
 		this.surfaceHolder = surfaceHolder;
-		
+
 		// initialize game
 		this.game = new GameSolo();
 		// initialize map and map resource
 		map = new Campus(game);
 		mapBM = StringResources.toBitmap(context, map.getBgImage());
-		
+
 		map.initialize();
 		WIDTH = map.getWidth();
 		HEIGHT = map.getHeight();
 		xOrigin = 0;
 		yOrigin = 0;
-		
+
 		// set map to game
 		game.setMap(map);
 		// add teams and players
 		team = game.getTeams().get(0);
 		player = new Player("Player");
 		team.addPlayer(player);
-		
+
 		// set player to game
 		game.setMainPlayer(player);
 		game.initialize();
@@ -137,33 +137,40 @@ public class GameThread extends Thread {
 		//---------------------------------------------------------
 		// Preload tower bitmaps - to improve runtime performance
 		//---------------------------------------------------------
-		
+
 		towerBM = new Bitmap[TowerType.getN()];
 		for (int i = 0; i < towerBM.length; i++)
 		{
 			towerBM[i] = StringResources.toBitmap(context, TowerType.getTower(i+1).getImage());
 		}
 	}
-	
+
 	// set active tower after button press on UI
 	public void setActiveTower(Tower tower)
 	{
 		activeTower = tower;
 		selectTower = null;
 	}
-	
+
 	// launch wave when a key is pressed
 	public boolean doOnKeyDown(int keyCode, KeyEvent event) {
-		game.launchNewWave(player, team);
+		if (!game.isLaunching())
+			game.launchNewWave(player, team);
+		else
+		{
+			CharSequence text = "Current wave still launching!";
+			Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+			toast.show();
+		}
 		return true;
 	}
-	
+
 	// when screen is touched
 	public void onTouch(MotionEvent event) {
-		
+
 		// reposition screen
 		mGD.onTouchEvent(event);
-		
+
 		// add tower if active and possible
 		if (activeTower != null && canPlaceTowers())
 		{
@@ -229,17 +236,17 @@ public class GameThread extends Thread {
 	private int dist2(int x1, int y1, int x2, int y2) {
 		return (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2);
 	}
-	
+
 	// run game?
 	public void setRunning(boolean b) {
 		this.runThread = b;
 	}
-	
+
 	@Override
 	public void run() {
 		game.start();
 		while (runThread) {
-			
+
 			// initiate new canvas to draw to
 			Canvas canvas = null;
 
@@ -262,7 +269,7 @@ public class GameThread extends Thread {
 			}
 		}
 	}
-	
+
 	// draw the game (on each refresh)
 	private void onDraw(Canvas canvas) {
 
@@ -284,7 +291,7 @@ public class GameThread extends Thread {
 
 
 		// animations - not implemented
-		
+
 
 		// draw towers
 
@@ -303,7 +310,7 @@ public class GameThread extends Thread {
 		}
 
 	}
-	
+
 	// draw tower
 	private void drawTower(Tower tower, Canvas canvas) {
 		canvas.drawBitmap(towerBM[TowerType.getTowerType(tower)-1],xOrigin+tower.x(),yOrigin+tower.y(),null);
@@ -343,11 +350,11 @@ public class GameThread extends Thread {
 		}
 	}
 
-	
+
 	//-------------------------------------
 	// return game data to game display
 	//-------------------------------------
-	
+
 	public int getScore()
 	{
 		return player.getScore();
