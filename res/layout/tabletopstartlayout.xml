@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/squirrel"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/inprog"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/inprogress" />
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:scrollY="5dp"
+        android:textColor="#000000" >
+    </ListView>
+
+    <EditText
+        android:id="@+id/challengee"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/chaloff"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/sendchallenge"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/challenge"
+            android:onClick="sendChallenge"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/playoffline"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/offline"
+            android:onClick="startOffline"
+            android:padding="10dp" />
+    </LinearLayout>
+
+</LinearLayout>

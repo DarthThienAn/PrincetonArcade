@@ -1,0 +1,55 @@
+public void onClick(View v) {
+        		
+        		if(g.board.isGameOver()) {
+        			Toast.makeText(GameBaseActivity.this, g.board.winner() + " is the winner" ,Toast.LENGTH_SHORT).show();
+        			return;
+        		}
+        		
+        		int choiceA = -1;
+        		int choiceB = -1;
+        		int validMove = 0;
+        		
+        		if(g.choice1 != -1) choiceA = g.choice1;
+        		else if(g.choice2 != -1) choiceA = g.choice2;
+        		else Toast.makeText(GameBaseActivity.this, "pick something" ,Toast.LENGTH_SHORT).show();
+        		
+        		if(g.choice1 != -1 && g.choice2 != -1) choiceB = g.choice2;
+        		       		
+        		//add
+        		if(g.nUnused == 1) {
+        			g.board.add(choiceA, g.playerturn);
+        			g.used[choiceA/4][choiceA%4] = true;
+        			validMove = 1;
+        		}
+        		     
+        		//capture
+        		if(g.nUnused == 1 && g.numKicks[g.playerturn] < 3
+        				&& g.playerturn != g.board.tables[choiceA/4].table[choiceA%4]) {
+        			g.board.capture(choiceA);
+        			validMove = 1;
+        			g.numKicks[g.playerturn]++;
+        		}
+        		
+        		//swap
+        		if(g.nUnused == 2 && g.board.tables[choiceA/4].table[choiceA%4] 
+        		                  != g.board.tables[choiceB/4].table[choiceB%4]
+        		                  && samePair(g, choiceA, choiceB)) {
+        			g.board.swap(choiceA, choiceB);
+        			validMove = 1;
+        			g.lastPair[0] = choiceA;
+        			g.lastPair[1] = choiceB;
+        		}
+        		
+        		if(validMove == 0) Toast.makeText(GameBaseActivity.this, "not a valid move" ,Toast.LENGTH_SHORT).show();
+        		else {
+        			if(g.playerturn == 1) g.playerturn = 2;
+        			if(g.playerturn == 2) g.playerturn = 1;
+        		}
+        		
+        		if(g.board.isGameOver()) Toast.makeText(GameBaseActivity.this, g.board.winner() + " is the winner" ,Toast.LENGTH_SHORT).show();
+        		
+        	}
+        	
+        public boolean samePair(GameState game, int a, int b) {
+        		return ((a == g.lastPair[0] || a == g.lastPair[1]) && (b == g.lastPair[0] || b == g.lastPair[1]));
+        }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/client_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Confirm sending a challenge to the other player"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/client_cancel"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/client_challenge"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="Cancel"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/client_challenge"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/client_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="Challenge"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+</RelativeLayout>

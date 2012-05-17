@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/mainlayoutback"
+    android:orientation="vertical" >
+
+    <GridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/offlinegridview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="4"
+        android:paddingBottom="5dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" >
+    </GridView>
+
+    <Button
+        android:id="@+id/offlinebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:background="@drawable/done"
+        android:onClick="offlineDone"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/offlineback"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:background="@drawable/back2"
+        android:onClick="onBack"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/quit"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:background="@drawable/quit"
+        android:onClick="quit"
+        android:padding="10dp" />
+
+</LinearLayout>

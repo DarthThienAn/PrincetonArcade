@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/welcomeuser"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ff9900"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:text="@string/loggedintxt"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+android:id/lv_lobby"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.96"
+        android:text="@string/loggedintxt"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tv_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lobbytext"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#CCFFCC" />
+
+    <Button
+        android:id="@+id/refreshlobby"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/button_background"
+        android:text="Refresh Lobby"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/startgames"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/button_background"
+        android:text="@string/playgame"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/button_background"
+        android:text="Log Out"
+        android:textColor="#ffffff" />
+
+</LinearLayout>
